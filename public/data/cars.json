@@ -1,0 +1,22 @@
+[
+  { "model": "Toyota Corolla", "plate": "กข1234 กรุงเทพ", "usageCount": 120, "status": "working" },
+  { "model": "Honda Civic", "plate": "ขค5678 เชียงใหม่", "usageCount": 85, "status": "avaiable" },
+  { "model": "Ford Ranger", "plate": "คง9012 ขอนแก่น", "usageCount": 200, "status": "booked" },
+  { "model": "Mazda CX-5", "plate": "ฆง3456 ภูเก็ต", "usageCount": 60, "status": "avaiable" },
+  { "model": "Isuzu D-Max", "plate": "งจ7890 สงขลา", "usageCount": 140, "status": "working" },
+  { "model": "Nissan Navara", "plate": "จฉ1122 นครราชสีมา", "usageCount": 110, "status": "avaiable" },
+  { "model": "Mitsubishi Triton", "plate": "ชช3344 สมุทรปราการ", "usageCount": 95, "status": "working" },
+  { "model": "Chevrolet Colorado", "plate": "ญญ5566 นนทบุรี", "usageCount": 150, "status": "booked" },
+  { "model": "Suzuki Swift", "plate": "ฎฎ7788 เชียงราย", "usageCount": 70, "status": "avaiable" },
+  { "model": "Subaru Forester", "plate": "ฏฏ9900 ชลบุรี", "usageCount": 130, "status": "working" },
+  { "model": "Hyundai Tucson", "plate": "ฐฐ2233 พระนครศรีอยุธยา", "usageCount": 85, "status": "avaiable" },
+  { "model": "Kia Sorento", "plate": "ฑฑ4455 ระยอง", "usageCount": 75, "status": "booked" },
+  { "model": "Volkswagen Tiguan", "plate": "ฒฒ6677 ลำปาง", "usageCount": 65, "status": "avaiable" },
+  { "model": "Audi Q5", "plate": "ณณ8899 นครปฐม", "usageCount": 120, "status": "working" },
+  { "model": "BMW X3", "plate": "ดด1010 สมุทรสงคราม", "usageCount": 140, "status": "working" },
+  { "model": "Mercedes-Benz GLC", "plate": "ตต1212 สุราษฎร์ธานี", "usageCount": 105, "status": "booked" },
+  { "model": "Tesla Model 3", "plate": "ถถ1313 กรุงเทพ", "usageCount": 90, "status": "avaiable" },
+  { "model": "Volvo XC60", "plate": "ทธ1414 ขอนแก่น", "usageCount": 75, "status": "working" },
+  { "model": "Jaguar F-Pace", "plate": "นบ1515 นครศรีธรรมราช", "usageCount": 80, "status": "avaiable" },
+  { "model": "Lexus RX", "plate": "บป1616 เชียงใหม่", "usageCount": 95, "status": "booked" }
+]
