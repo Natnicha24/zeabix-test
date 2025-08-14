@@ -10,37 +10,48 @@ import {
   ThemeProvider,
   Typography,
   Link,
+  Alert,
 } from "@mui/material";
 import { RefineThemes } from "@refinedev/mui";
 import { User } from "../../type/auth";
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { LoginForm, loginScheme } from "../../schema/authSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 function createFakeToken(email: string) {
   return btoa(email + ":" + new Date().getTime());
 }
 
 function LoginPage() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginForm>({
+    resolver: zodResolver(loginScheme),
+  });
+
   const blueTheme = createTheme(RefineThemes.Blue);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [isOpenAlert, setIsOpenAlert] = useState(false);
   const navigate = useNavigate();
 
   const users: User[] = JSON.parse(localStorage.getItem("users") || "[]");
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = (data: LoginForm) => {
     const isUser = users.find(
-      (user) => user.email === email && user.password === password
+      (user) => user.email === data.email && user.password === data.password
     );
-
+    console.log(isUser);
     if (isUser) {
-      const token = createFakeToken(email);
+      console.log("aa");
+      const token = createFakeToken(data.email);
       sessionStorage.setItem("token", token);
       sessionStorage.setItem("fullName", isUser.fullName);
       sessionStorage.setItem("role", isUser.role);
       setIsOpenAlert(false);
       navigate("/main");
+      return;
     } else {
       setIsOpenAlert(true);
     }
@@ -69,7 +80,7 @@ function LoginPage() {
             <Typography variant="h5" component="h1" align="center" gutterBottom>
               Login
             </Typography>
-            <Box component="form" onSubmit={handleLogin}>
+            <Box component="form" onSubmit={handleSubmit(handleLogin)}>
               <TextField
                 label="email"
                 variant="outlined"
@@ -77,11 +88,10 @@ function LoginPage() {
                 required
                 fullWidth
                 type="email"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  setIsOpenAlert(false);
-                }}
+                {...register("email")}
+                error={!!errors.email}
+                helperText={errors.email?.message}
+                onFocus={() => setIsOpenAlert(false)}
               />
               <TextField
                 label="password"
@@ -90,11 +100,9 @@ function LoginPage() {
                 required
                 fullWidth
                 type="password"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  setIsOpenAlert(false);
-                }}
+                {...register("password")}
+                error={!!errors.password}
+                helperText={errors.password?.message}
               />
               <Box
                 sx={{
@@ -102,14 +110,13 @@ function LoginPage() {
                   justifyContent: "center",
                 }}
               >
-                <Typography
-                  variant="caption"
-                  color="red"
-                  display={isOpenAlert ? "block" : "none"}
-                >
-                  email or password is wrong
-                </Typography>
+                {isOpenAlert && (
+                  <Alert severity="error" sx={{ mt: 1 }}>
+                    This email is not registered.
+                  </Alert>
+                )}
               </Box>
+
               <Button
                 type="submit"
                 variant="contained"

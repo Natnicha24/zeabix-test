@@ -17,51 +17,51 @@ import {
 import { useState } from "react";
 import { RegisterData, User } from "../../type/auth";
 import Alert from "@mui/material/Alert";
+import { useForm } from "react-hook-form";
+import { RegisterForm, registerSchema } from "../../schema/authSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 function RegisterPage() {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [cfPassword, setCfPassword] = useState("");
-  const [role, setRole] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterForm>({
+    resolver: zodResolver(registerSchema),
+  });
+
   const [isOpenAlert, setIsOpenAlert] = useState(false);
   const [isOpenAlertPassword, setIsOpenAlertPassword] = useState(false);
   const [popUp, setPopUp] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const newUser: RegisterData = {
-      fullName,
-      email,
-      password,
-      cfPassword,
-      role,
-    };
+  const handleSubmitForm = async (data: RegisterForm) => {
     const users: User[] = JSON.parse(localStorage.getItem("users") || "[]");
 
-    const isDuplicate = users.some((user) => user.email === newUser.email);
+    const isDuplicate = users.some((user) => user.email === data.email);
 
-    const isPasswordMatch = newUser.password === newUser.cfPassword;
-
-    if (!isPasswordMatch) {
-      setIsOpenAlertPassword(true);
-    } else {
-      if (isDuplicate) {
-        setIsOpenAlert(true);
-      } else {
-        users.push(newUser);
-        localStorage.setItem("users", JSON.stringify(users));
-        setIsOpenAlert(false);
-        setPopUp(true);
-        setTimeout(() => {
-          setPopUp(false);
-          navigate("/login");
-        }, 3000);
-      }
+    if (isDuplicate) {
+      setIsOpenAlert(true);
+      return;
     }
+
+    const newUser: RegisterData = {
+      fullName: data.fullName,
+      email: data.email,
+      password: data.password,
+      cfPassword: data.cfPassword,
+      role: data.role,
+    };
+
+    users.push(newUser);
+    localStorage.setItem("users", JSON.stringify(users));
+    setIsOpenAlert(false);
+    setPopUp(true);
+    setTimeout(() => {
+      setPopUp(false);
+      navigate("/login");
+    }, 3000);
   };
 
   return (
@@ -79,14 +79,13 @@ function RegisterPage() {
           <Typography variant="h5" component="h1" align="center" gutterBottom>
             Register
           </Typography>
-          <Box component="form" onSubmit={handleSubmit}>
+          <Box component="form" onSubmit={handleSubmit(handleSubmitForm)}>
             <TextField
               label="full name"
               margin="normal"
               fullWidth
               required
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
+              {...register("fullName")}
             />
             <TextField
               label="email"
@@ -94,11 +93,10 @@ function RegisterPage() {
               fullWidth
               required
               type="email"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setIsOpenAlert(false);
-              }}
+              {...register("email")}
+              error={!!errors.email}
+              helperText={errors.email?.message}
+              onFocus={() => setIsOpenAlert(false)}
             />
             <TextField
               label="password"
@@ -106,24 +104,10 @@ function RegisterPage() {
               fullWidth
               type="password"
               required
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                setIsOpenAlertPassword(false);
-              }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    borderColor: isOpenAlertPassword ? "red" : "grey",
-                  },
-                  "&:hover fieldset": {
-                    borderColor: isOpenAlertPassword ? "darkred" : "black",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: isOpenAlertPassword ? "red" : "blue",
-                  },
-                },
-              }}
+              {...register("password")}
+              error={!!errors.password}
+              helperText={errors.password?.message}
+              onFocus={() => setIsOpenAlertPassword(false)}
             />
             <TextField
               label="comfirm password"
@@ -131,40 +115,17 @@ function RegisterPage() {
               fullWidth
               type="password"
               required
-              value={cfPassword}
-              onChange={(e) => {
-                setCfPassword(e.target.value);
-                setIsOpenAlertPassword(false);
-              }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    borderColor: isOpenAlertPassword ? "red" : "grey",
-                  },
-                  "&:hover fieldset": {
-                    borderColor: isOpenAlertPassword ? "darkred" : "black",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: isOpenAlertPassword ? "red" : "blue",
-                  },
-                },
-              }}
+              {...register("cfPassword")}
+              error={!!errors.cfPassword}
+              helperText={errors.cfPassword?.message}
             />
-            <Typography
-              variant="caption"
-              color="red"
-              display={isOpenAlertPassword ? "block" : "none"}
-            >
-              password and confirm password is not match
-            </Typography>
             <FormControl fullWidth margin="normal" required>
               <InputLabel id="role-label">Role</InputLabel>
               <Select
                 labelId="role-label"
                 id="role"
                 label="role"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
+                {...register("role")}
               >
                 <MenuItem value="Admin">Admin</MenuItem>
                 <MenuItem value="Manager">Manager</MenuItem>
