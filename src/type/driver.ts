@@ -1,4 +1,4 @@
-type StatusType = "working" | "avaiable" | "booked";
+type StatusType = "working" | "available" | "booked";
 
 export interface Driver {
   fullName: string;

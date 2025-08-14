@@ -14,7 +14,7 @@ export const fetchDrivers = createAsyncThunk<Driver[]>(
   }
 );
 
-const initialState:DriverProps = {
+const initialState: DriverProps = {
   drivers: [],
   loading: false,
   error: null,
@@ -23,7 +23,12 @@ const initialState:DriverProps = {
 const driverSlice = createSlice({
   name: "drivers",
   initialState,
-  reducers: {},
+  reducers: {
+    addDriver: (state, action) => {
+      state.drivers.push(action.payload);
+      localStorage.setItem("drivers", JSON.stringify(state.drivers));
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchDrivers.pending, (state) => {
@@ -32,7 +37,10 @@ const driverSlice = createSlice({
       })
       .addCase(fetchDrivers.fulfilled, (state, action) => {
         state.loading = false;
-        state.drivers = action.payload;
+        const savedDrivers = localStorage.getItem("drivers");
+        state.drivers = savedDrivers
+          ? JSON.parse(savedDrivers)
+          : action.payload;
       })
       .addCase(fetchDrivers.rejected, (state, action) => {
         (state.loading = false),
@@ -41,4 +49,5 @@ const driverSlice = createSlice({
   },
 });
 
-export default driverSlice.reducer
+export default driverSlice.reducer;
+export const { addDriver } = driverSlice.actions;

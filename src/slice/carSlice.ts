@@ -25,7 +25,12 @@ export const fetchCars = createAsyncThunk<Car[]>(
 const carSlice = createSlice({
   name: "cars",
   initialState,
-  reducers: {},
+  reducers: {
+    addCar: (state, action) => {
+      state.cars.push(action.payload);
+      localStorage.setItem("cars", JSON.stringify(state.cars));
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchCars.pending, (state) => {
@@ -34,7 +39,8 @@ const carSlice = createSlice({
       })
       .addCase(fetchCars.fulfilled, (state, action) => {
         state.loading = false;
-        state.cars = action.payload;
+        const savedCars = localStorage.getItem("cars");
+        state.cars = savedCars ? JSON.parse(savedCars) : action.payload;
       })
       .addCase(fetchCars.rejected, (state, action) => {
         (state.loading = false),
@@ -44,3 +50,4 @@ const carSlice = createSlice({
 });
 
 export default carSlice.reducer;
+export const { addCar } = carSlice.actions;
